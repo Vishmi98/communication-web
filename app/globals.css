@@ -3,20 +3,30 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Brand Colors */
+  --primary: #F57224;      /* The gold color from your button/logo */
+  --primary-foreground: #000000;
+  
+  --accent: #1a1a1a;       /* Dark grey/black for overlays */
+  --muted: #71717a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  
+  /* Adding your custom colors to Tailwind */
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Font variables (as we set up before) */
+  --font-poppins: var(--font-poppins);
+  --font-libre: var(--font-libre);
+  --font-rouge: var(--font-rouge);
+  --font-montserrat: var(--font-montserrat);
 }
 
 body {
