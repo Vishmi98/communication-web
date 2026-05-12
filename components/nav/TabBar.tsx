@@ -26,7 +26,7 @@ const TabBar = () => {
 
           return (
             <Link
-              href={`/${tab.keyWord}`}
+              href="/"
               key={tab.id}
               onClick={() => setActiveIndex(index)}
               className={`group flex items-center gap-2 text-nowrap text-sm font-semibold px-3 py-2 h-full transition duration-300 rounded-md

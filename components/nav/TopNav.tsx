@@ -10,6 +10,7 @@ import { FaUser } from "react-icons/fa6";
 
 import SearchArea from "./SearchArea";
 import MobileTabBar from "./MobileTabBar";
+
 import useCartStore from "@/store/cartStore";
 
 

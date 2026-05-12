@@ -40,7 +40,7 @@ const SubCategoryPage = async ({ params }: Props) => {
     };
 
     return (
-        <div className="min-h-screen w-[95%] mx-auto py-10">
+        <div className="min-h-screen border-t-2 border-primary w-[95%] mx-auto py-10 mt-5 md:mt-0">
 
             {/* Breadcrumb */}
             <p className="text-sm text-gray-500 mb-4">

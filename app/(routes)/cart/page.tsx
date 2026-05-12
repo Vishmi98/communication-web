@@ -39,7 +39,7 @@ const CartPage = () => {
     };
 
     return (
-        <div className="min-h-screen border-t-2 border-primary w-[95%] mx-auto py-10">
+        <div className="min-h-screen border-t-2 border-primary w-[95%] mx-auto py-10 mt-5 md:mt-0">
             {/* Heading */}
             <div className="flex items-center justify-between mb-8">
                 <div>
