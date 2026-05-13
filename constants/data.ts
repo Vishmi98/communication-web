@@ -6,6 +6,8 @@ import { FaTags, FaStar } from "react-icons/fa";
 import { DealCardType, MenuItemType, ProductType } from "@/modules/homePage/homePage.types";
 
 
+export const JWT_SECRET = "eregr5trertw56rrgfhtyrt5tfasrgt235346346ffgsdfgdfsg4dfefsdrwef"
+
 export const TABS_DATA = [
   { id: 1, name: "Recently Viewed", keyWord: "recently_viewed", icon: FaClockRotateLeft },
   { id: 2, name: "Weekly Deals", keyWord: "weekly_deals", icon: AiFillThunderbolt },

@@ -7,17 +7,25 @@ import { MdOutlineShoppingCart } from "react-icons/md";
 import { BiAlignLeft } from "react-icons/bi";
 import { HiHeart } from "react-icons/hi";
 import { FaUser } from "react-icons/fa6";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 import SearchArea from "./SearchArea";
 import MobileTabBar from "./MobileTabBar";
 
 import useCartStore from "@/store/cartStore";
+import { UserStoreUserType } from "@/constants/types";
+import { getCookieUser } from "@/utils/cookie.util";
 
 
 const TopNav = () => {
     const [showMobileNav, setShowMobileNav] = useState(false);
     const [navBg, setNavBg] = useState(false);
     const cartCount = useCartStore((state) => state.cartCount);
+    const [user, setUser] = useState<UserStoreUserType | null>(null);
+    const [mounted, setMounted] = useState(false);
+
+    console.log("user", user);
 
     useEffect(() => {
         const handler = () => {
@@ -30,6 +38,16 @@ const TopNav = () => {
 
         window.addEventListener("scroll", handler);
         return () => window.removeEventListener("scroll", handler);
+    }, []);
+
+    useEffect(() => {
+        const cookieUser = getCookieUser();
+
+        if (cookieUser) {
+            setUser(cookieUser);
+        }
+
+        setMounted(true);
     }, []);
 
     const openNav = () => setShowMobileNav(true);
@@ -74,9 +92,20 @@ const TopNav = () => {
                                 <HiHeart size={25} />
                             </button>
 
-                            <button className="relative flex">
-                                <FaUser size={25} />
-                            </button>
+                            {mounted && user ? (
+                                <Link href='/profile' className="relative flex">
+                                    <FaUser size={25} />
+                                </Link>
+                            ) : (
+                                <Link href="/login">
+                                    <button
+                                        type="button"
+                                        className="font-semibold underline cursor-pointer hover:text-primary transition-colors duration-200"
+                                    >
+                                        Login
+                                    </button>
+                                </Link>
+                            )}
                         </div>
                     </div>
 
@@ -88,6 +117,7 @@ const TopNav = () => {
             {showMobileNav && (
                 <MobileTabBar showNav={showMobileNav} closeNav={closeNav} />
             )}
+            <ToastContainer />
         </>
     );
 };

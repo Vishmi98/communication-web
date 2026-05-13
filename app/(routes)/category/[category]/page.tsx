@@ -1,89 +1,152 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
-import { MENUITEMS } from "@/constants/data";
+import {
+    CategoryDataType,
+    MainCategoryDataType,
+} from "@/modules/products/products.types";
 
-interface Props {
-    params: Promise<{
-        category: string;
-    }>;
-}
+import {
+    getCategories,
+    getMainCategories,
+} from "@/modules/products/products.service";
 
-const CategoryPage = async ({ params }: Props) => {
-    const { category } = await params;
 
-    const formattedCategory = decodeURIComponent(category).replace(/-/g, " ");
+const CategoryPage = () => {
+    const params = useParams();
+    const slug = params?.category as string;
 
-    const selectedCategory = MENUITEMS.find(
-        (item) =>
-            item.name.toLowerCase() === formattedCategory.toLowerCase()
+    const formattedCategory = decodeURIComponent(slug || "")
+        .replace(/-/g, " ")
+        .toLowerCase();
+
+    const [categories, setCategories] = useState<CategoryDataType[]>([]);
+    const [mainCategories, setMainCategories] = useState<
+        MainCategoryDataType[]
+    >([]);
+    const [loading, setLoading] = useState(true);
+
+    // 1️⃣ FETCH ALL CATEGORIES
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+
+                const res = await getCategories();
+
+                if (!res.success) return;
+
+                setCategories(res.categories);
+
+                // 2️⃣ FIND CATEGORY ID FROM SLUG
+                const matchedCategory = res.categories.find((cat) =>
+                    cat.name.toLowerCase() === formattedCategory
+                );
+
+                if (!matchedCategory) return;
+
+                // 3️⃣ FETCH MAIN CATEGORIES
+                const mainRes = await getMainCategories(
+                    matchedCategory.id
+                );
+
+                if (mainRes.success) {
+                    setMainCategories(mainRes.mainCategories);
+                }
+            } catch (error) {
+                console.error("CategoryPage error:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [formattedCategory]);
+
+    if (loading) {
+        return (
+            <div className="w-[95%] mx-auto py-10">
+                <div className="animate-pulse">
+                    <div className="h-6 w-40 bg-gray-200 rounded mb-6" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <div
+                                key={i}
+                                className="h-56 bg-gray-200 rounded-2xl"
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    const selectedCategory = categories.find(
+        (cat) => cat.name.toLowerCase() === formattedCategory
     );
 
     return (
         <div className="min-h-screen border-t-2 border-primary w-[95%] mx-auto py-10 mt-5 md:mt-0">
 
             {/* Breadcrumb */}
-            <p className="text-sm text-gray-500 mb-4">
-                Home / {formattedCategory}
+            <p className="text-sm text-gray-500 mb-4 capitalize">
+                Home / {selectedCategory?.name || formattedCategory}
             </p>
 
             {/* Heading */}
             <div className="flex items-center justify-between mb-8">
                 <h1 className="text-3xl font-bold capitalize">
-                    {formattedCategory}
+                    {selectedCategory?.name || formattedCategory}
                 </h1>
             </div>
 
-            {/* CARDS */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* MAIN CATEGORY GRID */}
+            {mainCategories.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-20 text-center">
+                    <h2 className="text-xl font-semibold text-gray-700">
+                        No categories available
+                    </h2>
 
-                {selectedCategory?.subMenu.sections.map((section) => {
-                    const coverImage = section.image;
+                    <p className="text-sm text-gray-500 mt-1">
+                        There are no items in this category yet.
+                    </p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {mainCategories.map((main) => {
+                        const mainSlug = main.name
+                            .toLowerCase()
+                            .replace(/\s+/g, "-");
 
-                    return (
-                        <div
-                            key={section.heading}
-                            className="relative h-56 rounded-2xl overflow-hidden shadow-lg group"
-                        >
-
-                            {/* Background Image */}
-                            {coverImage && (
+                        return (
+                            <Link
+                                key={main.id}
+                                href={`/category/${slug}/${mainSlug}`}
+                                className="relative h-56 rounded-2xl overflow-hidden shadow-lg group bg-white"
+                            >
                                 <Image
-                                    src={coverImage}
-                                    alt={section.heading}
+                                    src={main.imagePath || "/placeholder.jpg"}
+                                    alt={main.name}
                                     fill
                                     className="object-cover group-hover:scale-105 transition duration-500"
                                 />
-                            )}
 
-                            {/* Dark Overlay */}
-                            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition" />
+                                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition" />
 
-                            {/* Content */}
-                            <div className="absolute inset-0 p-5 flex flex-col justify-end text-white">
-                                <h2 className="text-xl font-bold">
-                                    {section.heading}
-                                </h2>
-
-                                <div className="mt-2 flex flex-wrap gap-2">
-                                    {section.items.slice(0, 3).map((item) => (
-                                        <Link
-                                            key={item.name}
-                                            href={`/category/${category}/${item.name
-                                                .toLowerCase()
-                                                .replace(/\s+/g, "-")}`}
-                                            className="text-xs bg-white/20 px-2 py-1 rounded hover:bg-white/30"
-                                        >
-                                            {item.name}
-                                        </Link>
-                                    ))}
+                                <div className="absolute inset-0 p-5 flex flex-col justify-end text-white">
+                                    <h2 className="text-xl font-bold">
+                                        {main.name}
+                                    </h2>
                                 </div>
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
+                            </Link>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 };

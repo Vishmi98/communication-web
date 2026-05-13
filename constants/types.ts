@@ -1,3 +1,5 @@
+import { Method } from "axios";
+
 export type MobileTabBarProps = {
     showNav: boolean;
     closeNav: () => void;
@@ -43,4 +45,12 @@ export interface CommonButtonProps {
     disabled?: boolean;
     loading?: boolean;
     type?: "button" | "submit"
+}
+
+export type ApiCallOptions = {
+    url: string;
+    method?: Method; // GET, POST, PUT, etc.
+    body?: Record<string, any>;
+    params?: Record<string, any>;
+    isAuth?: boolean;
 }
