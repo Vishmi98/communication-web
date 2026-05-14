@@ -183,7 +183,7 @@ const CartPage = () => {
                                         false
                                     )
                                 }
-                                className="absolute top-4 right-4 text-muted hover:text-white"
+                                className="absolute top-4 right-4 text-muted hover:text-black"
                             >
                                 <BsX size={22} />
                             </button>

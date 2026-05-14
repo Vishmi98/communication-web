@@ -38,7 +38,7 @@ const GiveAwaySlider = () => {
       itemClass=""
     >
       {GIVEAWAY_IMAGES.map((image) => (
-        <div key={image.id} className="relative rounded overflow-hidden shadow-md h-[260px] w-[260px]">
+        <div key={image.id} className="relative rounded overflow-hidden shadow-md md:h-[260px] md:w-[260px] h-[300px] w-full">
           <Link href={image.href}>
             <Image
               src={image.src}

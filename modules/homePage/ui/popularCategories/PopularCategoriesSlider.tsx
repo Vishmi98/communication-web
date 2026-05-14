@@ -86,7 +86,7 @@ const PopularCategoriesSlider = () => {
         return (
           <div
             key={category.id}
-            className="relative rounded overflow-hidden shadow-md h-[300px] md:h-[260px] w-full md:w-[260px] mx-2"
+            className="relative rounded overflow-hidden shadow-md h-[300px] md:h-[260px] w-full md:w-[260px]"
           >
             {/* ✅ FIXED ROUTE */}
             <Link href={`/category/${categorySlug}/${mainSlug}`}>
