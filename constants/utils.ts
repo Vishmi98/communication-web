@@ -10,3 +10,9 @@ export const slugify = (text: string) => {
 export const generateAlphanumericVerificationCode = (): string => {
     return Math.random().toString(36).substring(2, 8).toUpperCase();  // Generates a random 6-character alphanumeric code
 };
+
+export const getEffectivePrice = (item: any) => {
+    return item.newPrice && item.newPrice > 0
+        ? item.newPrice
+        : item.price;
+};

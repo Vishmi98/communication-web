@@ -1,19 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface CartItem {
-    id: string | number;
-    image?: string;
-    title: string;
-    price: number;
-    rate: number;
-    quantity: number;
-}
+import { CartItemDataType } from "@/modules/cart/cart.types";
+
 
 interface CartState {
-    cart: CartItem[];
+    cart: CartItemDataType[];
     cartCount: number;
-    addToCart: (item: CartItem) => void;
+    addToCart: (item: CartItemDataType) => void;
     removeFromCart: (id: string | number) => void;
     clearCart: () => void;
 }
@@ -30,7 +24,7 @@ const useCartStore = create<CartState>()(
                         (i) => i.id === item.id
                     );
 
-                    let newCart: CartItem[];
+                    let newCart: CartItemDataType[];
 
                     if (existingItem) {
                         newCart = state.cart.map((i) =>
@@ -62,7 +56,7 @@ const useCartStore = create<CartState>()(
 
                     if (!existingItem) return state;
 
-                    let newCart: CartItem[];
+                    let newCart: CartItemDataType[];
 
                     if (existingItem.quantity > 1) {
                         newCart = state.cart.map((i) =>

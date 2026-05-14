@@ -1,14 +1,16 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
-import BigSaveCard from './BigSaveCard';
+import BestSellerCardSkeleton from '../bestSellers/BestSellerCardSkeleton';
+import BestSellerCard from '../bestSellers/BestSellerCard';
 
-import { BEST_SELLERS } from '@/constants/data';
 import useCartStore from '@/store/cartStore';
-import { DealCardType } from '@/modules/homePage/homePage.types';
+import { ItemDataType } from '@/modules/products/products.types';
+import { getItems } from '@/modules/products/products.service';
+import CartToast from '@/modules/cart/ui/CartToast';
 
 
 const BigSaveSlider = () => {
@@ -37,19 +39,43 @@ const BigSaveSlider = () => {
     quantity: 1,
   });
 
-  const handleAddToCart = (card: DealCardType) => {
+  const [items, setItems] = useState<ItemDataType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // ✅ FETCH ITEMS
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setLoading(true);
+
+        const res = await getItems();
+
+        if (res.success) {
+          setItems(res.items);
+        }
+      } catch (error) {
+        console.error("Failed to fetch items:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
+  const handleAddToCart = (card: ItemDataType) => {
     addToCart({
       id: card.id,
-      title: card.title,
-      price: card.price,
-      image: card.image,
-      rate: card.rate,
+      title: card.name,
+      price: card.newPrice > 0 ? card.newPrice : card.price, // ✅ important
+      image: card.mainImagePath,
+      rate: card.rating,
       quantity: 1,
     });
 
     setToastConfig({
       show: true,
-      itemName: card.title,
+      itemName: card.name,
       quantity: 1,
     });
 
@@ -61,18 +87,48 @@ const BigSaveSlider = () => {
     }, 2500);
   };
 
+  if (loading) {
+    return (
+      <Carousel
+        responsive={responsive}
+        infinite
+        autoPlay
+        autoPlaySpeed={5000}
+        keyBoardControl
+      >
+        {Array.from({ length: 6 }).map((_, index) => (
+          <BestSellerCardSkeleton key={index} />
+        ))}
+      </Carousel>
+    );
+  }
+
   return (
-    <Carousel
-      responsive={responsive}
-      infinite={true}
-      autoPlay={true}
-      autoPlaySpeed={5000}
-      keyBoardControl={true}
-    >
-      {BEST_SELLERS.map((data) => (
-        <BigSaveCard key={data.id} card={data} onAdd={() => handleAddToCart(data)} />
-      ))}
-    </Carousel>
+    <>
+      <Carousel
+        responsive={responsive}
+        infinite
+        autoPlay
+        autoPlaySpeed={5000}
+        keyBoardControl
+      >
+        {items.map((data) => (
+          <BestSellerCard
+            key={data.id}
+            card={data}
+            onAdd={() => handleAddToCart(data)}
+          />
+        ))}
+      </Carousel>
+
+      <div className="flex items-end">
+        <CartToast
+          show={toastConfig.show}
+          itemName={toastConfig.itemName}
+          quantity={toastConfig.quantity}
+        />
+      </div>
+    </>
   )
 }
 

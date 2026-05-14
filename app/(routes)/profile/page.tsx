@@ -10,6 +10,9 @@ import { UserDataType } from '@/modules/profile/profile.types';
 import { getUserProfileData } from '@/modules/profile/profile.service';
 import { handleCleanCookie } from '@/utils/cookie.util';
 import ProfileSkeleton from '@/modules/profile/ui/ProfileSkeleton';
+import { OrderDataType } from '@/modules/cart/cart.types';
+import { getOrderByUserId } from '@/modules/cart/cart.service';
+import OrderCard from '@/modules/profile/ui/OrderCard';
 
 
 const ProfilePage = () => {
@@ -19,6 +22,7 @@ const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState('personal');
   const [userData, setUserData] = useState<UserDataType | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [orders, setOrders] = useState<OrderDataType[]>([]);
 
   const tabs = [
     { id: 'personal', label: 'Personal Information', icon: FaUser },
@@ -31,11 +35,21 @@ const ProfilePage = () => {
     const fetchAllData = async () => {
       try {
         setIsLoading(true);
-        // 1. Fetch User Profile
+
+        // Fetch Profile
         const profileRes = await getUserProfileData();
 
         if (profileRes.success && profileRes.user) {
           setUserData(profileRes.user);
+
+          // Fetch Orders using customerId
+          const ordersRes = await getOrderByUserId({
+            customerId: profileRes.user.id,
+          });
+
+          if (ordersRes.success) {
+            setOrders(ordersRes.orders || []);
+          }
         } else {
           router.push('/login');
         }
@@ -106,11 +120,11 @@ const ProfilePage = () => {
 
         {/* Main Content Area */}
         <div className="w-full md:w-3/4">
-          <div className="bg-white rounded-lg border border-gray-200 p-6 h-full">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 md:p-6 h-full">
 
             {activeTab === 'personal' && (
               <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h3 className="md:text-xl text-lg font-bold mb-6 border-b pb-4">Personal Information</h3>
+                <h3 className="md:text-xl text-lg font-bold mb-6 border-b pb-2">Personal Information</h3>
 
                 <form className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -139,19 +153,38 @@ const ProfilePage = () => {
               </div>
             )}
 
-            {activeTab === 'orders' && (
+            {activeTab === "orders" && (
               <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h3 className="md:text-xl text-lg font-bold mb-6 border-b pb-4">My Orders</h3>
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                    <FaBoxOpen className="text-4xl text-gray-400" />
+                <h3 className="md:text-xl text-lg font-bold mb-6 border-b pb-2">
+                  My Orders
+                </h3>
+
+                {orders.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-center">
+                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                      <FaBoxOpen className="text-4xl text-gray-400" />
+                    </div>
+
+                    <h4 className="text-lg font-semibold">No orders yet</h4>
+
+                    <p className="text-gray-500 mt-2 mb-6">
+                      Looks like you haven't made any purchases yet.
+                    </p>
+
+                    <div className="pt-2 w-full md:w-fit">
+                      <CommonButton
+                        title="Start Shopping"
+                        onPress={() => router.push("/")}
+                      />
+                    </div>
                   </div>
-                  <h4 className="text-lg font-semibold">No orders yet</h4>
-                  <p className="text-gray-500 mt-2 mb-6">Looks like you haven't made any purchases yet.</p>
-                  <div className="pt-2 w-full md:w-fit">
-                    <CommonButton title='Start Shopping' onPress={() => { }} />
+                ) : (
+                  <div className="space-y-5">
+                    {orders.map((order) => (
+                      <OrderCard key={order.id} order={order} />
+                    ))}
                   </div>
-                </div>
+                )}
               </div>
             )}
 

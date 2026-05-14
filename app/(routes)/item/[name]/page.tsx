@@ -2,12 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import {
   ItemDataType,
 } from "@/modules/products/products.types";
-
 import {
   getRelatedItems,
   getCategories,
@@ -29,6 +28,7 @@ const slugify = (text?: string) =>
 
 const ItemPage = () => {
   const params = useParams();
+  const router = useRouter();
 
   const itemSlug = params?.name as string;
 
@@ -57,16 +57,17 @@ const ItemPage = () => {
     addToCart({
       id: card.id,
       title: card.name,
-      price: card.price,
+      price: card.newPrice > 0 ? card.newPrice : card.price, // ✅ use newPrice
       image: card.mainImagePath,
       rate: card.rating,
-      quantity: 1,
+      quantity: quantity, // ✅ use state
+      color: selectedColor, // ✅ ADD COLOR
     });
 
     setToastConfig({
       show: true,
       itemName: card.name,
-      quantity: 1,
+      quantity,
     });
 
     setTimeout(() => {
@@ -164,6 +165,20 @@ const ItemPage = () => {
     fetchItem();
   }, [itemSlug]);
 
+  const handleBuyNow = () => {
+    addToCart({
+      id: item!.id,
+      title: item!.name,
+      price: item!.newPrice > 0 ? item!.newPrice : item!.price,
+      image: item!.mainImagePath,
+      rate: item!.rating,
+      quantity,
+      color: selectedColor,
+    });
+
+    router.push("/checkout");
+  };
+
   if (loading) {
     return (
       <div className="w-[95%] mx-auto py-10 animate-pulse">
@@ -227,7 +242,7 @@ const ItemPage = () => {
             </div>
 
             {/* GALLERY */}
-            <div className="flex gap-3 overflow-x-auto w-full md:w-[20%]">
+            <div className="flex flex-col gap-3 overflow-y-auto w-full md:w-[20%]">
               {[
                 item.mainImagePath,
                 ...(item.imagePaths || []),
@@ -399,7 +414,7 @@ const ItemPage = () => {
 
               <CommonButton
                 title="Buy Now"
-                onPress={() => { }}
+                onPress={handleBuyNow}
                 backgroundColor="bg-white"
                 textColor="text-black"
                 shadowColor="rgba(0,0,0,0.08)"

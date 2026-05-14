@@ -72,6 +72,21 @@ export const getMainCategories = async (categoryId: number): Promise<MainCategor
     };
 };
 
+export const getAllMainCategories = async (): Promise<MainCategoriesResponseDataType> => {
+    const response: MainCategoriesResponseType = await apiCall({
+        url: `${URL}/mainCategory/get-all`,
+        method: 'GET',
+    });
+
+    const data = response.data || {};
+
+    return {
+        success: response.success ?? false,
+        message: response.message || 'No message provided',
+        mainCategories: data.mainCategories || [],
+    };
+};
+
 export const getSubCategories = async (categoryId: number, mainCategoryId: number): Promise<SubCategoriesResponseDataType> => {
     const response: SubCategoriesResponseType = await apiCall({
         url: `${URL}/subCategory/get-related`,

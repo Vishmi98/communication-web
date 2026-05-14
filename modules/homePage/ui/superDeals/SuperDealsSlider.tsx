@@ -1,14 +1,16 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 
-import SuperDealsCard from './SuperDealsCard';
+import BestSellerCardSkeleton from '../bestSellers/BestSellerCardSkeleton';
+import BestSellerCard from '../bestSellers/BestSellerCard';
 
-import { BEST_SELLERS } from '@/constants/data';
 import useCartStore from '@/store/cartStore';
-import { DealCardType } from '@/modules/homePage/homePage.types';
+import { ItemDataType } from '@/modules/products/products.types';
+import CartToast from '@/modules/cart/ui/CartToast';
+import { getItems } from '@/modules/products/products.service';
 
 
 const SuperDealsSlider = () => {
@@ -36,20 +38,43 @@ const SuperDealsSlider = () => {
     itemName: "",
     quantity: 1,
   });
+  const [items, setItems] = useState<ItemDataType[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleAddToCart = (card: DealCardType) => {
+  // ✅ FETCH ITEMS
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setLoading(true);
+
+        const res = await getItems();
+
+        if (res.success) {
+          setItems(res.items);
+        }
+      } catch (error) {
+        console.error("Failed to fetch items:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
+  const handleAddToCart = (card: ItemDataType) => {
     addToCart({
       id: card.id,
-      title: card.title,
-      price: card.price,
-      image: card.image,
-      rate: card.rate,
+      title: card.name,
+      price: card.newPrice > 0 ? card.newPrice : card.price, // ✅ important
+      image: card.mainImagePath,
+      rate: card.rating,
       quantity: 1,
     });
 
     setToastConfig({
       show: true,
-      itemName: card.title,
+      itemName: card.name,
       quantity: 1,
     });
 
@@ -61,18 +86,48 @@ const SuperDealsSlider = () => {
     }, 2500);
   };
 
+
+  if (loading) {
+    return (
+      <Carousel
+        responsive={responsive}
+        infinite
+        autoPlay
+        autoPlaySpeed={5000}
+        keyBoardControl
+      >
+        {Array.from({ length: 6 }).map((_, index) => (
+          <BestSellerCardSkeleton key={index} />
+        ))}
+      </Carousel>
+    );
+  }
+
   return (
-    <Carousel
-      responsive={responsive}
-      infinite={true}
-      autoPlay={true}
-      autoPlaySpeed={5000}
-      keyBoardControl={true}
-    >
-      {BEST_SELLERS.map((data) => (
-        <SuperDealsCard key={data.id} card={data} onAdd={() => handleAddToCart(data)} />
-      ))}
-    </Carousel>
+    <>
+      <Carousel
+        responsive={responsive}
+        infinite={true}
+        autoPlay={true}
+        autoPlaySpeed={5000}
+        keyBoardControl={true}
+      >
+        {items.map((data) => (
+          <BestSellerCard
+            key={data.id}
+            card={data}
+            onAdd={() => handleAddToCart(data)}
+          />
+        ))}
+      </Carousel>
+      <div className="flex items-end">
+        <CartToast
+          show={toastConfig.show}
+          itemName={toastConfig.itemName}
+          quantity={toastConfig.quantity}
+        />
+      </div>
+    </>
   )
 }
 

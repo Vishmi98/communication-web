@@ -1,20 +1,18 @@
 import React from 'react'
 import Image from 'next/image';
-import { FaStar } from 'react-icons/fa6';
 
-import { DealCardType } from '../../homePage.types';
+import { ItemDataType } from '@/modules/products/products.types';
+import StarRating from '@/components/StarRatings';
 
 
-const BestSellerCard = ({ card, onAdd }: { card: DealCardType, onAdd: () => void }) => {
-    const { image, title, price, rate } = card;
-
+const BestSellerCard = ({ card, onAdd }: { card: ItemDataType, onAdd: () => void }) => {
     return (
         <div className="group flex flex-col gap-5 items-center justify-center mx-5">
             {/* Image */}
             <div className="relative h-[150px] w-full overflow-hidden">
                 <Image
-                    src={image}
-                    alt={title}
+                    src={card?.mainImagePath || ''}
+                    alt={card?.name || ''}
                     width={500}
                     height={500}
                     className="h-full w-full object-cover transition-all duration-700 group-hover:scale-110"
@@ -31,21 +29,22 @@ const BestSellerCard = ({ card, onAdd }: { card: DealCardType, onAdd: () => void
             {/* Content */}
             <div className='text-start w-full'>
                 <p className='capitalize font-medium text-sm line-clamp-2'>
-                    {title}
+                    {card.name}
                 </p>
 
                 <p className='text-lg font-semibold text-primary'>
-                    LKR {price.toLocaleString('en-US')}
+                    LKR {card.price.toLocaleString('en-US')}
                 </p>
 
-                <p className='flex items-center text-xs gap-2'>
-                    <FaStar size={14} className='text-yellow-400' />
-                    {rate}
-                </p>
+                <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center text-yellow-500">
+                        <StarRating rating={card.rating} />
+                    </div>
 
-                <p className='text-xs text-gray-400'>
-                    100K sold
-                </p>
+                    <span className="text-xs text-gray-400">
+                        ({card.reviews})
+                    </span>
+                </div>
             </div>
             <button
                 type="button"

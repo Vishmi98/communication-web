@@ -37,6 +37,7 @@ export type CategoryDataType = {
 export type MainCategoryDataType = {
     id: number;
     categoryId: number;
+    categoryInfo: CategoryDataType;
     name: string;
     imagePath: string;
     imageId: string;
@@ -46,6 +47,8 @@ export type SubCategoryDataType = {
     id: number;
     categoryId: number;
     mainCategoryId: number;
+    categoryInfo: CategoryDataType;
+    mainCategoryInfo: MainCategoryDataType;
     name: string;
     imagePath: string;
     imageId: string;

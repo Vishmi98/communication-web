@@ -1,56 +1,81 @@
-"use client"
+"use client";
 
-import React, { useState } from 'react'
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
+import React, { useEffect, useState } from "react";
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 
-import BestSellerCard from './BestSellerCard';
+import BestSellerCard from "./BestSellerCard";
+import useCartStore from "@/store/cartStore";
+import CartToast from "@/modules/cart/ui/CartToast";
 
-import { BEST_SELLERS } from '@/constants/data';
-import useCartStore from '@/store/cartStore';
-import { DealCardType } from '@/modules/homePage/homePage.types';
-import CartToast from '@/modules/cart/ui/CartToast';
-
+import { ItemDataType } from "@/modules/products/products.types";
+import { getItems } from "@/modules/products/products.service";
+import BestSellerCardSkeleton from "./BestSellerCardSkeleton";
 
 const BestSellersSlider = () => {
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1324 },
       items: 3,
-      slidesToSlide: 3 // optional, default to 1.
+      slidesToSlide: 3,
     },
     tablet: {
       breakpoint: { max: 1324, min: 764 },
       items: 2,
-      slidesToSlide: 2 // optional, default to 1.
+      slidesToSlide: 2,
     },
     mobile: {
       breakpoint: { max: 764, min: 0 },
       items: 1,
-      slidesToSlide: 1 // optional, default to 1.
-    }
+      slidesToSlide: 1,
+    },
   };
 
   const addToCart = useCartStore((state) => state.addToCart);
+
   const [toastConfig, setToastConfig] = useState({
     show: false,
     itemName: "",
     quantity: 1,
   });
 
-  const handleAddToCart = (card: DealCardType) => {
+  const [items, setItems] = useState<ItemDataType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // ✅ FETCH ITEMS
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        setLoading(true);
+
+        const res = await getItems();
+
+        if (res.success) {
+          setItems(res.items);
+        }
+      } catch (error) {
+        console.error("Failed to fetch items:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
+  const handleAddToCart = (card: ItemDataType) => {
     addToCart({
       id: card.id,
-      title: card.title,
-      price: card.price,
-      image: card.image,
-      rate: card.rate,
+      title: card.name,
+      price: card.newPrice > 0 ? card.newPrice : card.price, // ✅ important
+      image: card.mainImagePath,
+      rate: card.rating,
       quantity: 1,
     });
 
     setToastConfig({
       show: true,
-      itemName: card.title,
+      itemName: card.name,
       quantity: 1,
     });
 
@@ -62,20 +87,41 @@ const BestSellersSlider = () => {
     }, 2500);
   };
 
+  if (loading) {
+    return (
+      <Carousel
+        responsive={responsive}
+        infinite
+        autoPlay
+        autoPlaySpeed={5000}
+        keyBoardControl
+      >
+        {Array.from({ length: 6 }).map((_, index) => (
+          <BestSellerCardSkeleton key={index} />
+        ))}
+      </Carousel>
+    );
+  }
+
   return (
     <>
       <Carousel
         responsive={responsive}
-        infinite={true}
-        autoPlay={true}
+        infinite
+        autoPlay
         autoPlaySpeed={5000}
-        keyBoardControl={true}
+        keyBoardControl
       >
-        {BEST_SELLERS.map((data) => (
-          <BestSellerCard key={data.id} card={data} onAdd={() => handleAddToCart(data)} />
+        {items.map((data) => (
+          <BestSellerCard
+            key={data.id}
+            card={data}
+            onAdd={() => handleAddToCart(data)}
+          />
         ))}
       </Carousel>
-      <div className='flex items-end'>
+
+      <div className="flex items-end">
         <CartToast
           show={toastConfig.show}
           itemName={toastConfig.itemName}
@@ -83,7 +129,7 @@ const BestSellersSlider = () => {
         />
       </div>
     </>
-  )
-}
+  );
+};
 
-export default BestSellersSlider
+export default BestSellersSlider;

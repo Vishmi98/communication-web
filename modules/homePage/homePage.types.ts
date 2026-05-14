@@ -1,3 +1,5 @@
+import { CategoryDataType, ItemDataType, MainCategoryDataType, SubCategoryDataType } from "../products/products.types";
+
 export interface SubMenuSectionItemType {
     name: string;
     image: string;
@@ -51,4 +53,60 @@ export type ProductType = {
 
 export interface ItemProps {
     card: ProductType;
+}
+
+export type SearchItemsResponseType = {
+    success: boolean;
+    message: string;
+    items: ItemDataType[]
+}
+
+export type SearchItemsDataResponseType = {
+    success: boolean;
+    message: string;
+    data: {
+        items: ItemDataType[]
+    };
+}
+
+export type SearchSubCategoryResponseType = {
+    success: boolean;
+    message: string;
+    subCategories: SubCategoryDataType[]
+}
+
+export type SearchSubCategoryDataResponseType = {
+    success: boolean;
+    message: string;
+    data: {
+        subCategories: SubCategoryDataType[]
+    };
+}
+
+export type SearchMainCategoryResponseType = {
+    success: boolean;
+    message: string;
+    mainCategories: MainCategoryDataType[]
+}
+
+export type SearchMainCategoryDataResponseType = {
+    success: boolean;
+    message: string;
+    data: {
+        mainCategories: MainCategoryDataType[]
+    };
+}
+
+export type SearchCategoryResponseType = {
+    success: boolean;
+    message: string;
+    categories: CategoryDataType[]
+}
+
+export type SearchCategoryDataResponseType = {
+    success: boolean;
+    message: string;
+    data: {
+        categories: CategoryDataType[]
+    };
 }

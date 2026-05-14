@@ -52,7 +52,7 @@ const SuccessPage = () => {
                         backgroundColor="bg-white"
                         textColor="text-gray-800"
                         className="border border-gray-300 hover:bg-white/90 flex items-center justify-center gap-2"
-                        onPress={() => router.push("/orders")}
+                        onPress={() => router.push("/profile")}
                         textClassName="flex items-center gap-2"
                     />
                 </div>

@@ -20,6 +20,7 @@ import ItemCard from "@/modules/products/ui/ItemCard";
 import ItemCardSkeleton from "@/modules/products/ui/ItemCardSkeleton";
 import useCartStore from "@/store/cartStore";
 import CartToast from "@/modules/cart/ui/CartToast";
+import { getEffectivePrice } from "@/constants/utils";
 
 
 const SubCategoryPage = () => {
@@ -135,7 +136,7 @@ const SubCategoryPage = () => {
         addToCart({
             id: card.id,
             title: card.name,
-            price: card.price,
+            price: getEffectivePrice(card),
             image: card.mainImagePath,
             rate: card.rating,
             quantity: 1,

@@ -3,9 +3,10 @@
 import React from "react";
 import Image from "next/image";
 import { FiMinus, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FaStar } from "react-icons/fa6";
 
 import { CartItemDataType } from "../cart.types";
-import { FaStar } from "react-icons/fa6";
+import { getEffectivePrice } from "@/constants/utils";
 
 
 interface Props {
@@ -21,6 +22,8 @@ const CartItemCard = ({
     onDecrease,
     onRemove,
 }: Props) => {
+    const price = getEffectivePrice(item);
+
     return (
         <div className="rounded-xl border border-gray-200 p-4 flex flex-col sm:flex-row gap-5">
             {/* Image */}
@@ -42,7 +45,7 @@ const CartItemCard = ({
 
                     <div className="flex items-center gap-10">
                         <p className="text-primary font-bold text-lg mt-1">
-                            LKR {item.price.toLocaleString("en-US")}
+                            LKR {price.toLocaleString("en-US")}
                         </p>
 
                         <div className="mt-1 flex items-center gap-2">
@@ -52,6 +55,10 @@ const CartItemCard = ({
                             </span>
                         </div>
                     </div>
+
+                    <p className="text-sm text-gray-500">
+                        Color: {item.color}
+                    </p>
                 </div>
 
                 {/* Actions */}
