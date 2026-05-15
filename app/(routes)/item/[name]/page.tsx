@@ -220,8 +220,7 @@ const ItemPage = () => {
           Home /{" "}
           {item.categoryInfo?.name} /{" "}
           {item.mainCategoryInfo?.name} /{" "}
-          {item.subCategoryInfo?.name} /{" "}
-          {item.name}
+          {item.subCategoryInfo?.name}
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -279,22 +278,22 @@ const ItemPage = () => {
             </h1>
 
             {/* BRAND */}
-            <p className="text-gray-500 mt-1">
+            {item.brand && <p className="text-gray-500 mt-1">
               Brand:{" "}
               <span className="font-medium">
                 {item.brand}
               </span>
-            </p>
+            </p>}
 
             {/* RATING */}
             <div className="flex items-center text-yellow-500 gap-2 mt-2">
-              <StarRating
+              {item.rating > 0 && <StarRating
                 rating={item.rating}
-              />
+              />}
 
-              <span className="text-gray-500">
+              {item.reviews > 0 && <span className="text-gray-500">
                 ({item.reviews})
-              </span>
+              </span>}
             </div>
 
             {/* PRICE */}

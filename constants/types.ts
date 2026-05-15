@@ -54,3 +54,22 @@ export type ApiCallOptions = {
     params?: Record<string, any>;
     isAuth?: boolean;
 }
+
+export type TableProps = {
+    reload?: boolean;
+    handleReload?: () => void;
+}
+
+export type AddModalProps = {
+    isOpen: boolean;
+    onClose: () => void;
+    handleReload: () => void;
+}
+
+export interface CropModalProps {
+    imageFile: File;
+    onCropComplete: (file: File) => void;
+    onClose: () => void;
+    cropWidth?: number;
+    cropHeight?: number;
+}

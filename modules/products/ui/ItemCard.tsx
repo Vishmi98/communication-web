@@ -65,13 +65,17 @@ const ItemCard = ({ item, onAdd }: Props) => {
 
                 {/* RATING */}
                 <div className="flex items-center gap-2 mt-1">
-                    <div className="flex items-center text-yellow-500">
-                        <StarRating rating={item.rating} />
-                    </div>
+                    {item.rating > 0 &&
+                        <div className="flex items-center text-yellow-500">
+                            <StarRating rating={item.rating} />
+                        </div>
+                    }
 
-                    <span className="text-sm text-gray-400">
-                        ({item.reviews})
-                    </span>
+                    {
+                        item.reviews > 0 && <span className="text-sm text-gray-400">
+                            ({item.reviews})
+                        </span>
+                    }
                 </div>
 
                 {/* PRICE */}

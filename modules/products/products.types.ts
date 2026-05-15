@@ -6,6 +6,27 @@ export type ColorDataType = {
     imageId: String,
 }
 
+export type ItemType = {
+    id: number;
+    name: string;
+    description: string;
+    price: number | string;
+    newPrice: number | string;
+    mainImagePath: string;
+    mainImageId: string;
+    category: number;
+    mainCategory: number;
+    subCategory: number;
+    brand: string;
+    model: string;
+    rating: number;
+    reviews: number;
+    colors: ColorDataType[];
+    imagePaths: string[];
+    imageIds: string[];
+    isPublished: boolean;
+}
+
 export type ItemDataType = {
     id: number;
     name: string;
@@ -49,6 +70,23 @@ export type SubCategoryDataType = {
     mainCategoryId: number;
     categoryInfo: CategoryDataType;
     mainCategoryInfo: MainCategoryDataType;
+    name: string;
+    imagePath: string;
+    imageId: string;
+}
+
+export type MainCategoryType = {
+    id: number;
+    categoryId: number;
+    name: string;
+    imagePath: string;
+    imageId: string;
+}
+
+export type SubCategoryType = {
+    id: number;
+    categoryId: number;
+    mainCategoryId: number;
     name: string;
     imagePath: string;
     imageId: string;
@@ -123,3 +161,107 @@ export type ItemDataResponseType = {
     message: string;
     item: ItemDataType | null;
 };
+
+export type TableItemsResponseDataType = {
+    success: boolean;
+    message: string;
+    page: number;
+    limit: number;
+    totalPages: number;
+    totalItems: number;
+    items: ItemDataType[];
+}
+
+export type TableItemsResponseType = {
+    success: boolean;
+    message: string;
+    data: {
+        page: number;
+        limit: number;
+        totalPages: number;
+        totalItems: number;
+        items: ItemDataType[];
+    }
+}
+
+export type TableCategoriesResponseDataType = {
+    success: boolean;
+    message: string;
+    page: number;
+    limit: number;
+    totalPages: number;
+    totalCategories: number;
+    categories: CategoryDataType[];
+}
+
+export type TableCategoriesResponseType = {
+    success: boolean;
+    message: string;
+    data: {
+        page: number;
+        limit: number;
+        totalPages: number;
+        totalCategories: number;
+        categories: CategoryDataType[];
+    }
+}
+
+export interface CreateCategoryResponseDataType {
+    success: boolean;
+    message: string;
+    data: {
+        category: CategoryDataType;
+    };
+}
+
+export type TableMainCategoriesResponseDataType = {
+    success: boolean;
+    message: string;
+    page: number;
+    limit: number;
+    totalPages: number;
+    totalMainCategories: number;
+    mainCategories: MainCategoryDataType[];
+}
+
+export type TableMainCategoriesResponseType = {
+    success: boolean;
+    message: string;
+    data: {
+        page: number;
+        limit: number;
+        totalPages: number;
+        totalMainCategories: number;
+        mainCategories: MainCategoryDataType[];
+    }
+}
+
+export interface CreateMainCategoryResponseDataType {
+    success: boolean;
+    message: string;
+    data: {
+        mainCategory: MainCategoryType;
+    };
+}
+
+export type TableSubCategoriesResponseDataType = {
+    success: boolean;
+    message: string;
+    page: number;
+    limit: number;
+    totalPages: number;
+    totalSubCategories: number;
+    subCategories: SubCategoryDataType[];
+}
+
+export type TableSubCategoriesResponseType = {
+    success: boolean;
+    message: string;
+    data: {
+        page: number;
+        limit: number;
+        totalPages: number;
+        totalSubCategories: number;
+        subCategories: SubCategoryDataType[];
+    }
+}

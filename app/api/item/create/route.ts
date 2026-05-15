@@ -27,19 +27,19 @@ export async function POST(req: NextRequest) {
 
         // Extract Image
         const mainImage = formData.get("image") as File | null;
-        const additionalImages = formData.getAll("images") as File[];
+        // const additionalImages = formData.getAll("images") as File[];
 
-        const colorsRaw = formData.get("colors") as string;
+        // const colorsRaw = formData.get("colors") as string;
 
-        let colors: any[] = [];
+        // let colors: any[] = [];
 
-        if (colorsRaw) {
-            try {
-                colors = JSON.parse(colorsRaw);
-            } catch (error) {
-                return sendErrorResponse("Invalid colors format.", 200);
-            }
-        }
+        // if (colorsRaw) {
+        //     try {
+        //         colors = JSON.parse(colorsRaw);
+        //     } catch (error) {
+        //         return sendErrorResponse("Invalid colors format.", 200);
+        //     }
+        // }
 
         if (
             !name?.trim() ||
@@ -84,75 +84,75 @@ export async function POST(req: NextRequest) {
         const imagePaths: string[] = [];
         const imageIds: string[] = [];
 
-        if (additionalImages?.length > 0) {
-            for (const image of additionalImages) {
-                try {
-                    const buffer = Buffer.from(await image.arrayBuffer());
+        // if (additionalImages?.length > 0) {
+        //     for (const image of additionalImages) {
+        //         try {
+        //             const buffer = Buffer.from(await image.arrayBuffer());
 
-                    const filename = `${Date.now()}-${image.name}`;
+        //             const filename = `${Date.now()}-${image.name}`;
 
-                    const uploaded = await ImageKitService.uploadImage(
-                        buffer,
-                        filename,
-                        "communication/items/gallery"
-                    );
+        //             const uploaded = await ImageKitService.uploadImage(
+        //                 buffer,
+        //                 filename,
+        //                 "communication/items/gallery"
+        //             );
 
-                    imagePaths.push(uploaded.url);
-                    imageIds.push(uploaded.fileId);
+        //             imagePaths.push(uploaded.url);
+        //             imageIds.push(uploaded.fileId);
 
-                } catch (error) {
-                    console.error("Gallery image upload failed:", error);
-                }
-            }
-        }
+        //         } catch (error) {
+        //             console.error("Gallery image upload failed:", error);
+        //         }
+        //     }
+        // }
 
-        const updatedColors = [];
+        // const updatedColors = [];
 
-        for (let i = 0; i < colors.length; i++) {
-            const color = colors[i];
+        // for (let i = 0; i < colors.length; i++) {
+        //     const color = colors[i];
 
-            let imagePath = "";
-            let imageId = "";
+        //     let imagePath = "";
+        //     let imageId = "";
 
-            // Frontend should send:
-            // colorImage_0
-            // colorImage_1
-            // etc.
+        //     // Frontend should send:
+        //     // colorImage_0
+        //     // colorImage_1
+        //     // etc.
 
-            const colorImage = formData.get(
-                `colorImage_${i}`
-            ) as File | null;
+        //     const colorImage = formData.get(
+        //         `colorImage_${i}`
+        //     ) as File | null;
 
-            if (colorImage) {
-                try {
-                    const buffer = Buffer.from(
-                        await colorImage.arrayBuffer()
-                    );
+        //     if (colorImage) {
+        //         try {
+        //             const buffer = Buffer.from(
+        //                 await colorImage.arrayBuffer()
+        //             );
 
-                    const filename = `${Date.now()}-${colorImage.name}`;
+        //             const filename = `${Date.now()}-${colorImage.name}`;
 
-                    const uploaded = await ImageKitService.uploadImage(
-                        buffer,
-                        filename,
-                        "communication/items/colors"
-                    );
+        //             const uploaded = await ImageKitService.uploadImage(
+        //                 buffer,
+        //                 filename,
+        //                 "communication/items/colors"
+        //             );
 
-                    imagePath = uploaded.url;
-                    imageId = uploaded.fileId;
+        //             imagePath = uploaded.url;
+        //             imageId = uploaded.fileId;
 
-                } catch (error) {
-                    console.error("Color image upload failed:", error);
-                }
-            }
+        //         } catch (error) {
+        //             console.error("Color image upload failed:", error);
+        //         }
+        //     }
 
-            updatedColors.push({
-                id: i + 1,
-                name: color.name,
-                hexCode: color.hexCode,
-                imagePath,
-                imageId,
-            });
-        }
+        //     updatedColors.push({
+        //         id: i + 1,
+        //         name: color.name,
+        //         hexCode: color.hexCode,
+        //         imagePath,
+        //         imageId,
+        //     });
+        // }
 
         const lastItem = await ItemModel.findOne().sort({ id: -1 });
         const nextId = lastItem ? lastItem.id + 1 : 1;
@@ -177,9 +177,10 @@ export async function POST(req: NextRequest) {
             reviews: Number(reviews),
             mainImagePath,
             mainImageId,
-            colors: updatedColors,
-            imagePaths,
-            imageIds,
+            // colors: updatedColors,
+            // imagePaths,
+            // imageIds,
+            isPublished: false,
         });
 
         return sendSuccessResponse("Item created successfully.", newItem);

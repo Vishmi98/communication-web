@@ -74,6 +74,10 @@ const ItemSchema = new mongoose.Schema(
         },
         imageIds: {
             type: [String],
+        },
+        isPublished: {
+            type: Boolean,
+            default: false
         }
     },
     {
