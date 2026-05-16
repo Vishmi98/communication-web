@@ -11,19 +11,19 @@ import {
     ItemType,
     MainCategoryDataType,
     SubCategoryDataType,
-} from "../../products.types";
+} from "../../products/products.types";
 
 import {
     itemInitialValues,
     itemValidationSchema,
-} from "../../products.utils";
+} from "../../products/products.utils";
 
 import {
     createItem,
     getCategories,
     getMainCategories,
     getSubCategories,
-} from "../../products.service";
+} from "../../products/products.service";
 
 import CommonModal from "@/components/CommonModal";
 import { AddModalProps } from "@/constants/types";

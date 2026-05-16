@@ -1,9 +1,9 @@
 export type ColorDataType = {
-    id: Number,
-    name: String,
-    hexCode: String,
-    imagePath: String,
-    imageId: String,
+    id: number,
+    name: string,
+    hexCode: string,
+    imagePath: string,
+    imageId: string,
 }
 
 export type ItemType = {
@@ -48,6 +48,7 @@ export type ItemDataType = {
     categoryInfo: CategoryDataType;
     mainCategoryInfo: MainCategoryDataType;
     subCategoryInfo: SubCategoryDataType;
+    isPublished: boolean;
 }
 
 export type CategoryDataType = {
@@ -264,4 +265,31 @@ export type TableSubCategoriesResponseType = {
         totalSubCategories: number;
         subCategories: SubCategoryDataType[];
     }
+}
+
+export interface SingleColorFormValues {
+    name: string;
+    hexCode: string;
+    file: File | null;
+    previewUrl: string;
+}
+
+export interface ItemModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    item: ItemDataType;
+    handleReload: () => void;
+}
+
+export interface EditItemModalProps {
+    isOpen: boolean;
+    onClose: () => void;
+    initialValues: ItemType | null;
+    handleReload: () => void;
+}
+
+export type PublishItemResponseDataType = {
+    success: boolean;
+    message: string;
+    data: ItemType;
 }

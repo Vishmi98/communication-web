@@ -12,7 +12,8 @@ async function registerUser(
     lastName: string,
     password: string,
     email: string,
-    phone: string
+    phone: string,
+    type: string
 ) {
     try {
         // Handle numeric ID safely
@@ -28,6 +29,7 @@ async function registerUser(
             password: hashedPassword,
             email: email.toLowerCase().trim(),
             phone,
+            type
         });
 
         await user.save();
@@ -54,23 +56,23 @@ export async function POST(req: NextRequest) {
         await connectDB();
         const body = await req.json();
 
-        const { firstName, lastName, password, email, phone } = body;
+        const { firstName, lastName, password, email, phone, type } = body;
 
         // 1. Basic Validation
-        if (!firstName || !lastName || !password || !email || !phone) {
+        if (!firstName || !lastName || !password || !email || !phone || !type) {
             return sendErrorResponse("All fields are required", 200);
         }
 
         // 2. Normalize and check existence
         const normalizedEmail = email.toLowerCase().trim();
 
-        const existingUser = await UserModel.findOne({ email: normalizedEmail });
+        const existingUser = await UserModel.findOne({ email: normalizedEmail, type });
 
         if (existingUser) {
             return sendErrorResponse("An account with this email already exists", 200);
         }
 
-        const result = await registerUser(firstName, lastName, password, normalizedEmail, phone);
+        const result = await registerUser(firstName, lastName, password, normalizedEmail, phone, type);
 
         return sendSuccessResponse(result.message, { email: result.email });
     } catch (error: any) {

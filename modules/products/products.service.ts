@@ -1,4 +1,4 @@
-import { CategoriesResponseDataType, CategoriesResponseType, CreateCategoryResponseDataType, CreateMainCategoryResponseDataType, ItemDataResponseType, ItemResponseType, ItemsResponseDataType, ItemsResponseType, MainCategoriesResponseDataType, MainCategoriesResponseType, SubCategoriesResponseDataType, SubCategoriesResponseType, TableCategoriesResponseDataType, TableCategoriesResponseType, TableItemsResponseDataType, TableItemsResponseType, TableMainCategoriesResponseDataType, TableMainCategoriesResponseType, TableSubCategoriesResponseDataType, TableSubCategoriesResponseType } from "./products.types";
+import { CategoriesResponseDataType, CategoriesResponseType, CreateCategoryResponseDataType, CreateMainCategoryResponseDataType, ItemDataResponseType, ItemResponseType, ItemsResponseDataType, ItemsResponseType, MainCategoriesResponseDataType, MainCategoriesResponseType, PublishItemResponseDataType, SubCategoriesResponseDataType, SubCategoriesResponseType, TableCategoriesResponseDataType, TableCategoriesResponseType, TableItemsResponseDataType, TableItemsResponseType, TableMainCategoriesResponseDataType, TableMainCategoriesResponseType, TableSubCategoriesResponseDataType, TableSubCategoriesResponseType } from "./products.types";
 
 import { URL } from "@/constants/config";
 import apiCall from "@/services/api.services";
@@ -282,5 +282,83 @@ export const addImages = async (data: FormData) => {
         data: {
             updatedItem: response.data,
         },
+    };
+};
+
+export const addColors = async (data: FormData) => {
+    const res = await axios.post(`${URL}/item/add-colors`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    const response = res.data;
+
+    return {
+        success: response.success,
+        message: response.message,
+        data: {
+            updatedItem: response.data,
+        },
+    };
+};
+
+export const updateItem = async (data: FormData) => {
+    const res = await axios.post(`${URL}/item/update`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    const response = res.data;
+
+    return {
+        success: response.success,
+        message: response.message,
+        data: {
+            updatedItem: response.data,
+        },
+    };
+};
+
+export const deleteColor = async (data: FormData) => {
+    const res = await axios.post(`${URL}/item/delete-color`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    const response = res.data;
+
+    return {
+        success: response.success,
+        message: response.message,
+        data: {
+            updatedItem: response.data,
+        },
+    };
+};
+
+export const deleteImage = async (data: FormData) => {
+    const res = await axios.post(`${URL}/item/delete-image`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    });
+
+    const response = res.data;
+
+    return {
+        success: response.success,
+        message: response.message,
+        data: {
+            updatedItem: response.data,
+        },
+    };
+};
+
+export const publishItem = async (id: number, isPublish: boolean): Promise<PublishItemResponseDataType> => {
+    const response: PublishItemResponseDataType = await apiCall({
+        url: `${URL}/item/publish`,
+        method: 'POST',
+        body: { id, isPublish },
+    });
+
+    return {
+        success: response.success,
+        message: response.message,
+        data: response.data
     };
 };

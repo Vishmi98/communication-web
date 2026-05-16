@@ -30,8 +30,8 @@ const CommonModal: FC<CommonModalProps> = ({
                 className={`bg-white rounded-lg w-full ${maxWidth} max-h-[90vh] overflow-hidden flex flex-col mx-3`}
             >
                 {/* Header */}
-                <div className="flex justify-between items-center m-4 pb-2 border-b border-b-gray-400">
-                    <h2 className="font-semibold">{title}</h2>
+                <div className="flex justify-between items-start gap-5 m-4 pb-2 border-b border-b-gray-400">
+                    <h2 className="font-semibold w-[90%]">{title}</h2>
 
                     <CgClose
                         className="w-4 h-4 cursor-pointer"

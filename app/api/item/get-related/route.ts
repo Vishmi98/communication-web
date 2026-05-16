@@ -20,7 +20,8 @@ export async function POST(request: Request) {
         const items = await ItemModel.find({
             category,
             mainCategory,
-            subCategory
+            subCategory,
+            isPublished: true
         })
             .populate("categoryInfo", "-_id")
             .populate("mainCategoryInfo", "-_id")

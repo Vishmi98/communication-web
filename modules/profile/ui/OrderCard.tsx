@@ -1,18 +1,36 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { BsEye } from "react-icons/bs";
+import { BiCopy, BiCheck } from "react-icons/bi"; // Added utility icons
+import { toast } from "react-toastify";
 
 import { OrderDataType } from "@/modules/cart/cart.types";
-
 
 type Props = {
     order: OrderDataType;
 };
 
 const OrderCard = ({ order }: Props) => {
+    const [copied, setCopied] = useState<boolean>(false);
+
+    // Copy to Clipboard interaction logic
+    const handleCopyTracking = async (trackingNum: string) => {
+        try {
+            await navigator.clipboard.writeText(trackingNum);
+            setCopied(true);
+            toast.success("Tracking number copied to clipboard!");
+
+            // Revert icon layout state back after 2 seconds
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error("Failed to copy text: ", err);
+            toast.error("Failed to copy tracking number.");
+        }
+    };
+
     return (
         <div className="border border-gray-200 rounded-lg md:p-4 p-2 bg-white shadow-sm hover:shadow-md transition-all">
             {/* Top Section */}
@@ -43,24 +61,48 @@ const OrderCard = ({ order }: Props) => {
                     >
                         {order.status}
                     </span>
-
-                    {/* <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium
-              ${order.isPaid
-                                ? "bg-green-100 text-green-700"
-                                : "bg-red-100 text-red-600"
-                            }`}
-                    >
-                        {order.isPaid ? "Paid" : "Cash on Delivery"}
-                    </span> */}
                     <Link href={`/track/${order.id}`} className="text-gray-500 hover:text-black transition">
                         <BsEye size={20} />
                     </Link>
                 </div>
             </div>
 
+            {/* Tracking Number Section (Renders only if tracking number is assigned) */}
+            {order.trackingNumber && (
+                <div className="mt-3 px-3 py-2 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                            Tracking ID:
+                        </span>
+                        <span className="text-sm font-mono font-bold text-gray-800">
+                            {order.trackingNumber}
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => handleCopyTracking(order.trackingNumber!)}
+                        className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded border transition-all ${copied
+                            ? "bg-green-50 text-green-700 border-green-200"
+                            : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 active:scale-95"
+                            }`}
+                        title={copied ? "Copied!" : "Copy tracking number"}
+                    >
+                        {copied ? (
+                            <>
+                                <BiCheck className="h-4 w-4 text-green-600" />
+                                <span>Copied</span>
+                            </>
+                        ) : (
+                            <>
+                                <BiCopy className="h-3.5 w-3.5" />
+                                <span>Copy</span>
+                            </>
+                        )}
+                    </button>
+                </div>
+            )}
+
             {/* Items */}
-            <div className="mt-2 space-y-4">
+            <div className="mt-4 space-y-4">
                 {order.items.map((item, index) => (
                     <div
                         key={index}
@@ -101,7 +143,7 @@ const OrderCard = ({ order }: Props) => {
             </div>
 
             {/* Bottom Section */}
-            <div className="mt-2 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="mt-4 border-t border-gray-100 pt-3 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div className="space-y-1">
                     <p className="text-sm text-gray-500">
                         Payment Method:{" "}

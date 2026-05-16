@@ -1,4 +1,4 @@
-import { LoginFormType, LoginResponseDataType, LoginResponseType, RegisterFormType, RegisterResponseDataType, RegisterResponseType, ResetPasswordResponseType, VerifyDataType } from "./auth.types";
+import { AdminLoginResponseType, LoginFormType, LoginResponseDataType, LoginResponseType, RegisterFormType, RegisterResponseDataType, RegisterResponseType, ResetPasswordResponseType, VerifyDataType } from "./auth.types";
 
 import apiCall from "@/services/api.services";
 import { URL } from "@/constants/config";
@@ -44,6 +44,7 @@ export const handleUserRegister = async ({
     firstName,
     lastName,
     phone,
+    type,
 }: RegisterFormType): Promise<RegisterResponseType> => {
     const response: RegisterResponseDataType = await apiCall({
         url: `${URL}/user/create`,
@@ -53,7 +54,8 @@ export const handleUserRegister = async ({
             password,
             firstName,
             lastName,
-            phone
+            phone,
+            type,
         },
     })
 
@@ -108,4 +110,26 @@ export const restPassword = async (email: string, firstName: string): Promise<Re
         success: response.success,
         message: response.message,
     });
+};
+
+export const loginAdmin = async ({ email, password }: LoginFormType): Promise<LoginResponseType> => {
+    const response: AdminLoginResponseType = await apiCall({
+        url: `${URL}/user/login-admin`,
+        method: 'POST',
+        body: { email, password },
+    })
+
+    if (response?.success) {
+        return {
+            success: true,
+            message: response?.message,
+            token: response?.data?.token
+        }
+    }
+    else {
+        return {
+            success: false,
+            message: response?.message,
+        }
+    }
 };

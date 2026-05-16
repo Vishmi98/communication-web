@@ -6,6 +6,7 @@ import {
     LuLayers,
     LuLogOut,
     LuPackage,
+    LuShoppingBag,
 } from "react-icons/lu";
 import { TbLayoutSidebarLeftCollapseFilled, TbLayoutSidebarRightCollapseFilled } from "react-icons/tb";
 import { BiX } from "react-icons/bi";
@@ -38,6 +39,11 @@ const menuItems = [
         icon: <LuFolderTree size={18} />,
         path: "/admin/sub-categories"
     },
+    {
+        name: "Orders",
+        icon: <LuShoppingBag size={18} />,
+        path: "/admin/orders"
+    },
 ];
 
 export default function Sidebar({
@@ -57,7 +63,7 @@ export default function Sidebar({
     const handleLogOut = () => {
         handleCleanCookie();
         removeUser();
-        window.location.href = "/";
+        window.location.href = "/sign_in";
     };
 
     return (

@@ -17,7 +17,7 @@ const Items = () => {
 
     return (
         <>
-            <div className="overflow-y-auto w-full h-full scrollbar-hide">
+            <div className="no-scrollbar overflow-y-auto w-full h-full">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="font-semibold text-lg">Items</h2>
                     <div className="flex justify-end">

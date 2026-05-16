@@ -29,6 +29,7 @@ export type OrderDataType = {
     status: string;
     note: string;
     estimatedDeliveryTime: string;
+    trackingNumber: string | null;
     createdAt: string;
     updatedAt: string;
 };

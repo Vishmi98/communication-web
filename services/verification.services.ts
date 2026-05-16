@@ -55,6 +55,7 @@ export class VerificationService {
         isVerify: user.isVerify,
         email: user.email,
         phone: user?.phone,
+        type: user.type,
       });
 
       // 5. Cleanup: Delete the verification code so it can't be used again

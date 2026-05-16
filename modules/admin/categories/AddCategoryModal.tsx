@@ -5,9 +5,9 @@ import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik'
 import { toast } from 'react-toastify'
 import { BiLoader } from 'react-icons/bi'
 
-import { CategoryDataType } from '../../products.types'
-import { categoryInitialValues, categoryValidationSchema } from '../../products.utils'
-import { createCategory } from '../../products.service'
+import { CategoryDataType } from '../../products/products.types'
+import { categoryInitialValues, categoryValidationSchema } from '../../products/products.utils'
+import { createCategory } from '../../products/products.service'
 
 import CommonModal from '@/components/CommonModal'
 import { AddModalProps } from '@/constants/types'

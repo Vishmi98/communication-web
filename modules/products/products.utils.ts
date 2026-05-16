@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 
-import { CategoryDataType, ItemType, MainCategoryType, SubCategoryType } from "./products.types";
+import { CategoryDataType, ItemType, MainCategoryType, SingleColorFormValues, SubCategoryType } from "./products.types";
 
 
 export const itemInitialValues: ItemType = {
@@ -105,3 +105,18 @@ export const subCategoryValidationSchema = Yup.object({
     imagePath: Yup.string(),
     imageId: Yup.string(),
 })
+
+export const colorInitialValues: SingleColorFormValues = {
+    name: "",
+    hexCode: "#000000",
+    file: null,
+    previewUrl: "",
+}
+
+export const colorValidationSchema = Yup.object().shape({
+    name: Yup.string().required("Color title string required"),
+    hexCode: Yup.string()
+        .required("Hex code required")
+        .matches(/^#([0-9a-fA-F]{3}){1,2}$/, "Must be valid CSS hex format"),
+    file: Yup.mixed().required("Variant reference file attachment image required"),
+});

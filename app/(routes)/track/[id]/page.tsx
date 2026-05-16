@@ -8,13 +8,12 @@ import {
     BsChatDots,
     BsPhone
 } from "react-icons/bs";
-
 import {
     IoCheckmarkDoneOutline,
-    IoFastFoodOutline,
     IoBicycleOutline,
     IoTimeOutline
 } from "react-icons/io5";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 
 import { getOrderById } from "@/modules/cart/cart.service";
@@ -76,7 +75,6 @@ const TrackOrderPage = () => {
         const currentStep = [
             "Pending",
             "Accepted",
-            "Preparing",
             "Out for Delivery",
             "Delivered"
         ].indexOf(status);
@@ -92,9 +90,9 @@ const TrackOrderPage = () => {
             },
             {
                 id: 2,
-                title: "Preparing Food",
-                desc: "Chef is preparing your meal",
-                icon: <IoFastFoodOutline />,
+                title: "On The Way",
+                desc: "Driver heading to you",
+                icon: <IoBicycleOutline />,
                 state:
                     currentStep === 2
                         ? "current"
@@ -104,23 +102,11 @@ const TrackOrderPage = () => {
             },
             {
                 id: 3,
-                title: "On The Way",
-                desc: "Driver heading to you",
-                icon: <IoBicycleOutline />,
-                state:
-                    currentStep === 3
-                        ? "current"
-                        : currentStep > 3
-                            ? "complete"
-                            : "upcoming"
-            },
-            {
-                id: 4,
                 title: "Delivered",
                 desc: "Enjoy your food",
                 icon: <IoCheckmarkDoneOutline />,
                 state:
-                    currentStep === 4
+                    currentStep === 3
                         ? "complete"
                         : "upcoming"
             }
@@ -364,17 +350,32 @@ const TrackOrderPage = () => {
                                         key={item.id}
                                         className="flex justify-between border-b border-black/10 pb-4"
                                     >
-                                        <div>
-                                            <h3 className="font-medium">
-                                                {item.name}
-                                            </h3>
+                                        <div className="flex gap-5">
+                                            <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                                                <Image
+                                                    src={item.mainImagePath}
+                                                    alt="Product"
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-medium">
+                                                    {item.name}
+                                                </h3>
 
-                                            <p className="text-sm text-muted">
-                                                Qty: {item.quantity}
-                                            </p>
+                                                <p className="text-sm text-muted">
+                                                    Qty: {item.quantity}
+                                                </p>
+                                                {item.color && (
+                                                    <p className="text-sm text-gray-500">
+                                                        Color: {item.color}
+                                                    </p>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        <p className="font-semibold text-primary">
+                                        <p className="font-semibold">
                                             $
                                             {(
                                                 item.price *

@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         }
 
         // when page and limit are NOT passed
-        const items = await ItemModel.find()
+        const items = await ItemModel.find({ isPublished: true })
             .populate("categoryInfo", "-_id")
             .populate("mainCategoryInfo", "-_id")
             .populate("subCategoryInfo", "-_id")

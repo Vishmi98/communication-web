@@ -113,7 +113,6 @@ const OrderSchema = new mongoose.Schema(
             enum: [
                 "Pending",
                 "Accepted",
-                "Preparing",
                 "Out for Delivery",
                 "Delivered",
                 "Cancelled"
@@ -128,6 +127,10 @@ const OrderSchema = new mongoose.Schema(
 
         estimatedDeliveryTime: {
             type: Date
+        },
+        trackingNumber: {
+            type: String,
+            default: null
         }
     },
     {
@@ -137,14 +140,14 @@ const OrderSchema = new mongoose.Schema(
 
 OrderSchema.virtual("customerInfo", {
     ref: "User",
-    localField: "customer",
+    localField: "customer.id",
     foreignField: "id",
     justOne: true
 });
 
 OrderSchema.virtual("itemsInfo", {
     ref: "Item",
-    localField: "items",
+    localField: "items.id",
     foreignField: "id",
 });
 

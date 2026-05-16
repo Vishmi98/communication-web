@@ -3,8 +3,8 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-import { SubCategoryDataType } from "../../products.types";
-import { getSubCategoriesData } from "../../products.service";
+import { SubCategoryDataType } from "../../products/products.types";
+import { getSubCategoriesData } from "../../products/products.service";
 
 import { TableProps } from "@/constants/types";
 import CommonTable, { ColumnType } from "@/components/CommonTable";

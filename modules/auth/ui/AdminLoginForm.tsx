@@ -2,13 +2,13 @@
 
 import React, { useState } from 'react';
 import jwt from 'jsonwebtoken';
-import Link from 'next/link';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { toast } from 'react-toastify';
 import { HiOutlineEyeOff, HiOutlineEye } from 'react-icons/hi';
+import { useRouter } from 'next/navigation';
 
 import { LoginFormType } from '../auth.types';
-import { handleUserLogin } from '../auth.service';
+import { loginAdmin } from '../auth.service';
 import { getLoginFormValidationSchema, loginFormInitialValues } from '../auth.utils';
 
 import { LOCAL_STORE } from '@/constants/key';
@@ -20,33 +20,29 @@ import CommonButton from '@/components/CommonButton';
 const AdminLoginForm = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
 
     const handleSubmit = async (values: LoginFormType, { resetForm }: { resetForm: () => void }) => {
-        try {
-            setIsLoading(true);
+        setIsLoading(true);
+        const res = await loginAdmin({ email: values.email, password: values.password });
 
-            // const res = await handleUserLogin({ email: values.email, password: values.password });
+        if (res.success && res?.token) {
+            localStorage.setItem(LOCAL_STORE.LOCAL_USER, res?.token)
+            const decoded = jwt.decode(res?.token) as { user: UserStoreUserType };
 
-            // if (res.success && res?.token) {
-            //     localStorage.setItem(LOCAL_STORE.LOCAL_USER, res.token);
+            handleSaveCookieToken(res?.token)
+            handleSaveCookieUser(JSON.stringify(decoded.user))
 
-            //     const decoded = jwt.decode(res.token) as { user: UserStoreUserType };
-            //     handleSaveCookieToken(res.token);
-            //     handleSaveCookieUser(JSON.stringify(decoded.user));
+            toast.success(res.message);
 
-            //     toast.success(res.message);
-            // } else {
-            //     resetForm();
-            //     toast.error(res.message);
-            // }
-            window.location.href = "/admin/dashboard";
-        } catch (error) {
+            router.push("/admin/items");
+
             resetForm();
-            console.error(error);
-            toast.error("Login failed");
-        } finally {
-            setIsLoading(false);
+        } else {
+            toast.error(res.message);
+            resetForm();
         }
+        setIsLoading(false);
     };
 
     const inputClasses = "w-full px-4 py-2 border border-black/10 rounded-lg focus:outline-none focus:border-black transition-all duration-300 placeholder:text-gray-500";

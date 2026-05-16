@@ -6,9 +6,9 @@ import { toast } from 'react-toastify'
 import { BiLoader } from 'react-icons/bi'
 import Image from 'next/image'
 
-import { CategoryDataType, MainCategoryType } from '../../products.types'
-import { mainCategoryInitialValues, mainCategoryValidationSchema } from '../../products.utils'
-import { getCategories, createMainCategory } from '../../products.service'
+import { CategoryDataType, MainCategoryType } from '../../products/products.types'
+import { mainCategoryInitialValues, mainCategoryValidationSchema } from '../../products/products.utils'
+import { getCategories, createMainCategory } from '../../products/products.service'
 
 import CommonModal from '@/components/CommonModal'
 import { AddModalProps } from '@/constants/types'

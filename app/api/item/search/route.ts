@@ -30,6 +30,7 @@ export async function POST(req: Request) {
                 { brand: regex },
                 { model: regex },
             ],
+            isPublished: true
         })
             .populate({
                 path: "categoryInfo",

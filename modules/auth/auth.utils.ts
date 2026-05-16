@@ -21,6 +21,7 @@ export const registerFormInitialValues: RegisterFormType = {
     email: '',
     password: '',
     phone: '',
+    type: 'User',
 };
 
 export const getRegisterFormValidationSchema = () => {

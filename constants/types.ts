@@ -32,6 +32,15 @@ export type UserStoreUserType = {
     lastName: string;
     phone: string;
     isVerify: boolean;
+    type: string;
+}
+
+export interface AdminTypeJwt {
+    id: number;              // Unique identifier, e.g., 2000000002
+    firstName: string;       // First name of the teacher
+    lastName: string;        // Last name of the teacher
+    type: number;               // User type, '2' represents a Teacher
+    email: string;           // Email address of the teacher
 }
 
 export interface CommonButtonProps {
@@ -73,3 +82,10 @@ export interface CropModalProps {
     cropWidth?: number;
     cropHeight?: number;
 }
+
+export type ConfirmModalProps = {
+    isOpen: boolean;
+    onClose: () => void;
+    onConfirm: () => void;
+    message: string;
+};

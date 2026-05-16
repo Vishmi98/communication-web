@@ -50,6 +50,7 @@ export async function POST(req: NextRequest) {
             isVerify: user.isVerify,
             email: user.email,
             phone: user?.phone,
+            type: user.type,
         });
 
         return sendSuccessResponse("Login successful", {

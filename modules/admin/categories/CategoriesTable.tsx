@@ -1,17 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 
-import { MainCategoryDataType } from "../../products.types";
-import { getMainCategoriesData } from "../../products.service";
+import { CategoryDataType } from "../../products/products.types";
+import { getCategoriesData } from "../../products/products.service";
 
 import { TableProps } from "@/constants/types";
 import CommonTable, { ColumnType } from "@/components/CommonTable";
 
 
-const MainCategoriesTable: React.FC<TableProps> = ({ reload }) => {
-    const [mainCategories, setMainCategories] = useState<MainCategoryDataType[]>([]);
+const CategoriesTable: React.FC<TableProps> = ({ reload }) => {
+    const [categories, setCategories] = useState<CategoryDataType[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [totalRows, setTotalRows] = useState(0);
     const [page, setPage] = useState(1);
@@ -24,21 +23,21 @@ const MainCategoriesTable: React.FC<TableProps> = ({ reload }) => {
         try {
             const currentPage = paramPage || page;
 
-            const response = await getMainCategoriesData(
+            const response = await getCategoriesData(
                 currentPage,
                 limit
             );
 
             if (response.success) {
-                setMainCategories(response.mainCategories);
-                setTotalRows(response.totalMainCategories);
+                setCategories(response.categories);
+                setTotalRows(response.totalCategories);
                 setTotalPages(response.totalPages);
                 setPage(currentPage);
             } else {
-                setMainCategories([]);
+                setCategories([]);
             }
         } catch {
-            setMainCategories([]);
+            setCategories([]);
         } finally {
             setIsLoading(false);
         }
@@ -48,7 +47,7 @@ const MainCategoriesTable: React.FC<TableProps> = ({ reload }) => {
         fetchData(page);
     }, [reload, page]);
 
-    const columns: ColumnType<MainCategoryDataType>[] = [
+    const columns: ColumnType<CategoryDataType>[] = [
         {
             header: "Id",
             accessor: "id",
@@ -62,19 +61,7 @@ const MainCategoriesTable: React.FC<TableProps> = ({ reload }) => {
         },
 
         {
-            header: "Category Name",
-            accessor: "categoryInfo.name",
-            render: (item) => (
-                <div className="max-w-[250px]">
-                    <p className="line-clamp-2">
-                        {item.categoryInfo?.name}
-                    </p>
-                </div>
-            ),
-        },
-
-        {
-            header: "Main Category Name",
+            header: "Name",
             accessor: "name",
             render: (item) => (
                 <div className="max-w-[250px]">
@@ -84,27 +71,12 @@ const MainCategoriesTable: React.FC<TableProps> = ({ reload }) => {
                 </div>
             ),
         },
-
-        {
-            header: "Image",
-            accessor: "imagePath",
-            render: (item) => (
-                <div className="relative w-14 h-14 overflow-hidden rounded-lg border border-gray-200">
-                    <Image
-                        src={item.imagePath}
-                        alt={item.name}
-                        fill
-                        className="object-cover"
-                    />
-                </div>
-            ),
-        },
     ];
 
     return (
         <CommonTable
             columns={columns}
-            data={mainCategories}
+            data={categories}
             isLoading={isLoading}
             expandable={false}
             page={page}
@@ -118,4 +90,4 @@ const MainCategoriesTable: React.FC<TableProps> = ({ reload }) => {
     );
 };
 
-export default MainCategoriesTable;
+export default CategoriesTable;

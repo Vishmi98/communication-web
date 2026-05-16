@@ -10,52 +10,64 @@ export async function POST(req: NextRequest) {
         await connectDB();
 
         const body = await req.json();
-        const { id, status } = body;
+        const { id, status, isPaid } = body;
 
-        if (!id || !status) {
-            return sendErrorResponse("Order id and status required", 200);
+        if (!id) {
+            return sendErrorResponse("Order id is required", 400);
         }
 
-        const allowedStatus = [
-            "Pending",
-            "Accepted",
-            "Preparing",
-            "Out for Delivery",
-            "Delivered",
-            "Cancelled"
-        ];
-
-        if (!allowedStatus.includes(status)) {
-            return sendErrorResponse("Invalid status", 200);
-        }
-
-        // get current order first
         const existingOrder = await OrderModel.findOne({ id });
-
         if (!existingOrder) {
-            return sendErrorResponse("Order not found", 200);
+            return sendErrorResponse("Order not found", 404);
         }
 
-        // prepare update object
-        const updateData: any = {
-            status
-        };
+        const updateData: any = {};
 
-        // ✅ AUTO HANDLE PAYMENT WHEN DELIVERED
-        if (status === "Delivered") {
-            updateData.isPaid = true;
+        // 1. Handle Status Update Validation if provided
+        if (status) {
+            const allowedStatus = ["Pending", "Accepted", "Out for Delivery", "Delivered", "Cancelled"];
+            if (!allowedStatus.includes(status)) {
+                return sendErrorResponse("Invalid status value", 400);
+            }
+
+            // Order progression rule index array
+            const statusPriority = ["Pending", "Accepted", "Out for Delivery", "Delivered"];
+            const currentIdx = statusPriority.indexOf(existingOrder.status);
+            const nextIdx = statusPriority.indexOf(status);
+
+            // Lock modifications if already terminal state
+            if (existingOrder.status === "Delivered" || existingOrder.status === "Cancelled") {
+                return sendErrorResponse("Completed or cancelled orders cannot be modified", 400);
+            }
+
+            // Prevent downward updates unless setting to Cancelled
+            if (status !== "Cancelled" && nextIdx < currentIdx) {
+                return sendErrorResponse("Cannot revert order status to a previous stage", 400);
+            }
+
+            updateData.status = status;
+
+            // Auto-pay rule when delivered
+            if (status === "Delivered") {
+                updateData.isPaid = true;
+            }
         }
 
-        const order = await OrderModel.findOneAndUpdate(
-            { id },
-            updateData,
-            { new: true }
-        );
+        // 2. Handle Independent Payment State Updates if provided
+        if (typeof isPaid === "boolean") {
+            updateData.isPaid = isPaid;
+        }
 
-        return sendSuccessResponse("Status updated", order);
+        // Drop out early if no operations match
+        if (Object.keys(updateData).length === 0) {
+            return sendErrorResponse("No valid update parameters provided", 400);
+        }
+
+        const order = await OrderModel.findOneAndUpdate({ id }, updateData, { new: true });
+        return sendSuccessResponse("Order successfully updated", order);
 
     } catch (error) {
         console.error(error);
-        return sendErrorResponse("Server Error", 200);
+        return sendErrorResponse("Internal Server Error", 500);
     }
 }

@@ -168,7 +168,7 @@ const CommonTable = <T extends { id: number | string }>({
 
             {/* Pagination */}
             {!isLoading && totalPages > 1 && (
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-200 px-5 py-4">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 border-t border-gray-200 px-5 py-2">
                     <p className="text-xs text-gray-600">
                         <span className="font-semibold">
                             {(page - 1) * limit + 1}

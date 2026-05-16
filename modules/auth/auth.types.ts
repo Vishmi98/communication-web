@@ -15,12 +15,19 @@ export type LoginResponseDataType = {
     data: { token: string, isVerify: boolean }
 }
 
+export type AdminLoginResponseType = {
+    success: boolean;
+    message: string;
+    data: { token: string }
+}
+
 export type RegisterFormType = {
     firstName: string;
     lastName: string;
     email: string;
     password: string;
     phone: string;
+    type: string;
 }
 
 export type RegisterResponseType = {
